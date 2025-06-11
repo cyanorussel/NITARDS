@@ -1,7 +1,10 @@
 import path from "path";
 import express from "express";
 import dotenv from "dotenv";
-dotenv.config({ path: './backend/.env' });
+
+const __dirname = path.resolve(); // <-- Move this up here
+
+dotenv.config({ path: path.resolve(__dirname, './backend/.env') });
 import connectDB from "./db/connectDB.js";
 import cookieParser from "cookie-parser";
 import userRoutes from "./routes/userRoutes.js";
@@ -18,7 +21,6 @@ connectDB();
 job.start();
 
 const PORT = process.env.PORT || 5000;
-const __dirname = path.resolve();
 
 cloudinary.config({
 	cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -35,6 +37,9 @@ app.use(cookieParser());
 app.use("/api/users", userRoutes);
 app.use("/api/posts", postRoutes);
 app.use("/api/messages", messageRoutes);
+app.get("/", (req, res) => {
+  res.send("API is running...");
+});
 
 // http://localhost:5000 => backend,frontend
 
